@@ -12,6 +12,8 @@ namespace CaseStudy.Models
         [Required]
         public string BorrowerName { get; set; }
         [Required]
+        [DataType(DataType.PhoneNumber, ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^0([0-9]{9})$", ErrorMessage = "Invalid Phone Number.")]
         public string PhoneNumber { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
