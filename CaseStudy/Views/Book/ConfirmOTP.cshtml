@@ -1,0 +1,39 @@
+﻿@model CaseStudy.Models.Book
+@{
+    ViewBag.Title = "ConfirmOTP";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Input OTP sended your mail</h2>
+
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            <input class="form-control" type="text" id="txtOTP" />
+        </div>
+        <p id="error" class = "text-danger"></p>
+        <div class="form-group">
+            <button type="submit" class="btn btn-default" onclick="return confirmOTP(@ViewBag.OTP) == true;">Confirm</button>
+        </div>
+    </div>
+    <script>
+        function confirmOTP(otp) {
+            var confirm = document.getElementById("txtOTP").value;
+            if (confirm == otp) {
+                alert("OTP correct!! This book is updated");
+                return true;
+            } else {
+                document.getElementById("error").innerHTML = "OTP Incorrect!!";
+            }
+        }
+    </script>
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
