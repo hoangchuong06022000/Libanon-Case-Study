@@ -9,10 +9,7 @@ Văn Hoàng Chương
 2. Khởi động Visual Studio và SQL Server (Nếu chưa có cần phải cài đặt, link dưới đây)
 https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio?view=vs-2022
 https://docs.microsoft.com/en-us/sql/database-engine/install-windows/install-sql-server?view=sql-server-ver15
-3. Sau khi hoàn thành bước trên, tại Visual Studio, ta vào Menu Tools ->  NuGet Pakage Manager -> Pakage Manager Console.
-  3.1. enable-migrations
-  3.2. add-migration
-  3.3. update-database
+3. Sau khi hoàn thành bước trên, tại Visual Studio, ta vào Menu Tools ->  NuGet Pakage Manager -> Pakage Manager Console: enable-migrations -> add-migration -> update-database
 4. Sau khi đã có database, ta đã có thể run được project.
 ## Tài liệu hướng dẫn
 <br><br>
