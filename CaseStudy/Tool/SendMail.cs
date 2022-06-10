@@ -21,12 +21,12 @@ namespace CaseStudy.Tool
         }
         public void sendConfirm(string subject, string emailTo, string mess)
         {
-            var senderEmail = new MailAddress("libanonAch@gmail.com");
+            var senderEmail = new MailAddress("libanon@outlook.com.vn");
             var receiverEmail = new MailAddress(emailTo);
-            var password = "libanonach@123";
+            var password = "MOYmeoHONG321@";
             var smtp = new SmtpClient
             {
-                Host = "smtp.gmail.com",
+                Host = "smtp-mail.outlook.com",
                 Port = 587,
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
@@ -36,25 +36,26 @@ namespace CaseStudy.Tool
             using (var message = new MailMessage(senderEmail, receiverEmail)
             {
                 Subject = subject,
-                Body = mess
+                Body = mess,
             })
             {
                 smtp.Send(message);
             }
         }
+
         public void sendOTP(string subject, string emailTo)
         {
-            var senderEmail = new MailAddress("libanonAch@gmail.com");
+            var senderEmail = new MailAddress("libanon@outlook.com.vn");
             var receiverEmail = new MailAddress(emailTo);
-            var password = "libanonach@123";
+            var password = "MOYmeoHONG321@";
             var smtp = new SmtpClient
             {
-                Host = "smtp.gmail.com",
+                Host = "smtp-mail.outlook.com",
                 Port = 587,
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(senderEmail.Address, password)
+                Credentials = new NetworkCredential(senderEmail.Address, password),
             };
             using (var message = new MailMessage(senderEmail, receiverEmail)
             {

@@ -1,4 +1,5 @@
 ﻿using CaseStudy.Models;
+using CaseStudy.Tool;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -52,6 +53,11 @@ namespace CaseStudy.Repository
             {
                 return false;
             }
+        }
+
+        public SendMail SendMail()
+        {
+            throw new NotImplementedException();
         }
 
         public bool Update(Borrower item)

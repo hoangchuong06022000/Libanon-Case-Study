@@ -11,8 +11,8 @@ namespace CaseStudy.Models
     {
         public LibanonContext() : base("name = LibanonDB")
         {
-            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<BookContext, Day1.Migrations.Configuration>());
-            Database.SetInitializer<LibanonContext>(new DropCreateDatabaseIfModelChanges<LibanonContext>());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<LibanonContext, CaseStudy.Migrations.Configuration>());
+            //Database.SetInitializer<LibanonContext>(new DropCreateDatabaseIfModelChanges<LibanonContext>());
         }
         public DbSet<Book> Books { get; set; }
         public DbSet<ISBN> ISBNs { get; set; }

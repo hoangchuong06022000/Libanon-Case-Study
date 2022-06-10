@@ -5,87 +5,111 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Author)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Image)
-        </th>
-        <th>
-            @Html.DisplayName("ISBN")
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PublishYear)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Category)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Summary)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Owner.OwnerName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ISBN.RateScore)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Author)
-        </td>
-        <td>
-            <img src="@Url.Content("~/Content/Image/" + item.Image)" style="max-width:100px; max-height:130px" />
-        </td>
-         <td>
-            @Html.DisplayFor(modelItem => item.ISBN.ISBNString)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PublishYear)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Summary)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Owner.OwnerName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ISBN.RateScore)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @*@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { onclick = "return confirm('Are you sure delete this book?');" } ) |*@
-            @Html.ActionLink("Rate", "Rate", new { id = item.Id }) |
-            @if (@item.IsBorrowed == false)
-            {
-                @Html.ActionLink("Borrow", "Borrow", new { id = item.Id })
-            }
-            else
-            {
-                @Html.ActionLink("Return", "Return", new { id = item.Id })
-            }
-        </td>
-    </tr>
-}
-
-</table>
+<div class="main-panel" style="width:100%">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
+        <div class="container-fluid">
+            <div class="navbar-wrapper">
+                <a class="navbar-brand" href="javascript:;">BOOK</a>
+            </div>
+        </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Book Management</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="@Url.Action("Create", "Book")" class="add"><button type="button" class="btn btn-info-add-new" style="background-color: #51bcda;"><i class="fa fa-plus"></i> Create New</button></a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="overflow-y: scroll; overflow-x: scroll; height:100%; width: 100%; display: block; overflow: auto">
+                            <table class="table">
+                                <thead class=" text-primary">
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Title)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Author)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Image)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("ISBN")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Publish Year")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Category)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Summary)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Owner")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Rate")
+                                    </th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Title)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author)
+                                            </td>
+                                            <td>
+                                                <img src="@Url.Content("~/Content/Image/" + item.Image)" style="max-width:100px; max-height:130px" />
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.ISBN.ISBNString)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PublishYear)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Category)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Summary)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Owner.OwnerName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.ISBN.RateScore)
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", "Book", new { id = item.Id })" class="edit"><button type="button" class="btn" style="background-color:white"><i class='fa fa-edit' style="color:forestgreen;font-size:20px"></i></button></a>|
+                                                <a href="@Url.Action("Details", "Book", new { id = item.Id })" class="details"><button type="button" class="btn" style="background-color:white"><i class='fa fa-info-circle' style="color:burlywood;font-size:20px"></i></button></a>|
+                                                <a href="@Url.Action("Rate", "Book", new { id = item.Id })" class="rate"><button type="button" class="btn" style="background-color:white"><i class='fa fa-star' style="color:yellow;font-size:20px"></i></button></a>|
+                                                @if (@item.IsBorrowed == false)
+                                                {
+                                                    @Html.ActionLink("Borrow", "Borrow", new { id = item.Id })
+                                                }
+                                                else
+                                                {
+                                                    @Html.ActionLink("Return", "Return", new { id = item.Id })
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

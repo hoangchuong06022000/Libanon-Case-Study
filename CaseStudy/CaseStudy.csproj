@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Email, Version=22.5.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Email.22.5.0\lib\net45\Aspose.Email.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -58,17 +61,26 @@
     <Reference Include="Ninject.Extensions.ChildKernel, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.Extensions.ChildKernel.3.3.0\lib\net45\Ninject.Extensions.ChildKernel.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
@@ -140,6 +152,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -192,6 +205,22 @@
     <Compile Include="Migrations\202204260742597_LibanonDB-v0.cs" />
     <Compile Include="Migrations\202204260742597_LibanonDB-v0.designer.cs">
       <DependentUpon>202204260742597_LibanonDB-v0.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206080715232_LibanonDB-v1.cs" />
+    <Compile Include="Migrations\202206080715232_LibanonDB-v1.Designer.cs">
+      <DependentUpon>202206080715232_LibanonDB-v1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206090404396_LibanonDB-v2.cs" />
+    <Compile Include="Migrations\202206090404396_LibanonDB-v2.Designer.cs">
+      <DependentUpon>202206090404396_LibanonDB-v2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206090500591_LibanonDB-v3.cs" />
+    <Compile Include="Migrations\202206090500591_LibanonDB-v3.Designer.cs">
+      <DependentUpon>202206090500591_LibanonDB-v3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206090540249_LibanonDB-v5.cs" />
+    <Compile Include="Migrations\202206090540249_LibanonDB-v5.Designer.cs">
+      <DependentUpon>202206090540249_LibanonDB-v5.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Book.cs" />
@@ -280,9 +309,13 @@
     <Content Include="Views\Book\Return.cshtml" />
     <Content Include="Views\Book\ConfirmReturningBook.cshtml" />
     <Content Include="Views\Book\Rate.cshtml" />
+    <None Include="Web.IISProfile.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -316,6 +349,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202204260742597_LibanonDB-v0.resx">
       <DependentUpon>202204260742597_LibanonDB-v0.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206080715232_LibanonDB-v1.resx">
+      <DependentUpon>202206080715232_LibanonDB-v1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206090404396_LibanonDB-v2.resx">
+      <DependentUpon>202206090404396_LibanonDB-v2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206090500591_LibanonDB-v3.resx">
+      <DependentUpon>202206090500591_LibanonDB-v3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206090540249_LibanonDB-v5.resx">
+      <DependentUpon>202206090540249_LibanonDB-v5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

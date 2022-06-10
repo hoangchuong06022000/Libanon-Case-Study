@@ -24,7 +24,7 @@ namespace CaseStudy.Models
         [Required]
         [DisplayName("Owner")]
         public int OwnerId { get; set; }
-        public bool IsBorrowed { get; set; }
+        public bool? IsBorrowed { get; set; }
         public int? BorrowerId { get; set; }
         public virtual ISBN ISBN { get; set; }
         public virtual Owner Owner { get; set; }

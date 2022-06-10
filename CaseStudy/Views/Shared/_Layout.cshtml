@@ -6,24 +6,21 @@
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <!-- CSS Files -->
+    <link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Book", "Index", "Book", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
-                </ul>
-            </div>
+    <div class="navbar fixed-top navbar-light bg-primary">
+        <div class="navbar-collapse collapse">
+            <ul class="navbar-nav" style="display:inline-block;">
+                <li class="nav-item nav-link">@Html.ActionLink("Home", "Index", "Home")</li>
+                <li class="nav-item nav-link">@Html.ActionLink("Book", "Index", "Book")</li>
+                @*<li class="nav-item nav-link">@Html.ActionLink("API", "Index", "Help")</li>*@     
+            </ul>   
         </div>
     </div>
     <div class="container body-content">
@@ -33,7 +30,12 @@
             <p>&copy; @DateTime.Now.Year - Libanon Case Study</p>
         </footer>
     </div>
-
+    <!--   Core JS Files   -->
+    <script src="~/Content/assets/js/core/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/assets/js/core/jquery.min.js"></script>
+    <script src="~/Content/assets/js/core/popper.min.js"></script>
+    <script src="~/Content/assets/js/core/bootstrap.min.js"></script>
+    <script src="~/Content/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

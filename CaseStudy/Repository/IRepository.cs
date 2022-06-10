@@ -1,4 +1,5 @@
 ﻿using CaseStudy.Models;
+using CaseStudy.Tool;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace CaseStudy.Repository
 {
     public interface IRepository<T>
     {
+        SendMail SendMail();
         List<T> GetAll();
         T GetItem(int Id);
         bool Insert(T item);
