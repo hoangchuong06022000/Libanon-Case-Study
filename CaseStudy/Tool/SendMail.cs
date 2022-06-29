@@ -36,7 +36,7 @@ namespace CaseStudy.Tool
             using (var message = new MailMessage(senderEmail, receiverEmail)
             {
                 Subject = subject,
-                Body = mess,
+                Body = mess
             })
             {
                 smtp.Send(message);

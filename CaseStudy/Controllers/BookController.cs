@@ -6,14 +6,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Web;
 
 namespace CaseStudy.Controllers
 {
     public class BookController : Controller
     {
-        private static int borrowerId, ownerId;
+        private static int? borrowerId, ownerId;
+        private string url = string.Format("{0}://{1}:{2}", System.Web.HttpContext.Current.Request.Url.Scheme, System.Web.HttpContext.Current.Request.Url.Host, System.Web.HttpContext.Current.Request.Url.Port);
+        private static string otpCheck;
         // GET: Book
         readonly IRepository<Book> bookRepository;
         readonly IRepository<Borrower> borrowerRepository;
@@ -25,6 +27,10 @@ namespace CaseStudy.Controllers
 
         public ActionResult Index()
         {
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"].ToString();
+            }
             List<Book> books = bookRepository.GetAll().Where(x => x.IsBorrowed != null).ToList();
             return View(books);
         }
@@ -35,13 +41,13 @@ namespace CaseStudy.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Book book, HttpPostedFileBase imageUrl)
+        public ActionResult Create(Book book, HttpPostedFileBase Image)
         {
             if (ModelState.IsValid)
             {
-                if (imageUrl != null)
+                if (Image != null)
                 {
-                    string fileName = Path.GetFileName(imageUrl.FileName);
+                    string fileName = Path.GetFileName(Image.FileName);
                     string path = Path.Combine(Server.MapPath("~/Content/Image/"));
 
                     if (!Directory.Exists(path))
@@ -49,14 +55,15 @@ namespace CaseStudy.Controllers
                         Directory.CreateDirectory(path);
                     }
 
-                    imageUrl.SaveAs(path + fileName);
+                    Image.SaveAs(path + fileName);
 
                     book.Image = fileName;
                     if (bookRepository.Insert(book))
                     {
                         var booK = bookRepository.GetAll().OrderByDescending(u => u.Id).FirstOrDefault();
-                        string mess = "http://localhost:61698/Book/ConfirmAddBook/" + booK.Id;
+                        string mess = this.url + "/Book/ConfirmAddBook/" + booK.Id;
                         bookRepository.SendMail().sendConfirm("Xác nhận", book.Owner.Email, mess);
+                        TempData["message"] = "Libanon sent link comfirm "+ book.Title + " book to " + book.Owner.Email + "!!";
                         return RedirectToAction("Index");
                     }
 
@@ -71,7 +78,7 @@ namespace CaseStudy.Controllers
             book.IsBorrowed = false;
             if (bookRepository.Update(book) == true)
             {
-                return View(book);
+                TempData["message"] = book.Title + " book is comfirmed!!";
             }
             return RedirectToAction("Index");
         }
@@ -93,35 +100,43 @@ namespace CaseStudy.Controllers
 
         public ActionResult Edit(int Id)
         {
-            var book = bookRepository.GetItem(Id);
-            
+            var book = bookRepository.GetItem(Id);           
             return View(book);
         }
 
         public ActionResult ConfirmOTP(int Id)
         {
             var booK = bookRepository.GetItem(Id);
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"].ToString();
+                return View(booK);
+            }
             bookRepository.SendMail().sendOTP("Mã OTP của bạn là ", booK.Owner.Email);
-            ViewBag.OTP = bookRepository.SendMail().getOTP();
-            Debug.WriteLine(bookRepository.SendMail().getOTP());
+            otpCheck = bookRepository.SendMail().getOTP();
             return View(booK);
         }
 
         [HttpPost]
-        public ActionResult ConfirmOTP(Book book, HttpPostedFileBase ImageUrl)
+        public ActionResult ConfirmOTP(Book book, HttpPostedFileBase Image, string otp)
         {
-            book.IsBorrowed = false;
-            if (ImageUrl == null)
+            if(otp != otpCheck)
+            {
+                TempData["message"] = "OTP Incorrect!!";
+                return ConfirmOTP(book.Id);
+            }
+            if (Image == null)
             {
                 book.Image = bookRepository.GetItem(book.Id).Image;
                 if (bookRepository.Update(book) == true)
                 {
+                    TempData["message"] = book.Title + " book is updated!!";
                     return RedirectToAction("Index");
                 }
             }
             else
             {
-                string fileName = Path.GetFileName(ImageUrl.FileName);
+                string fileName = Path.GetFileName(Image.FileName);
                 string path = Path.Combine(Server.MapPath("~/Content/Image/"));
 
                 if (!Directory.Exists(path))
@@ -129,15 +144,16 @@ namespace CaseStudy.Controllers
                     Directory.CreateDirectory(path);
                 }
 
-                ImageUrl.SaveAs(path + fileName);
+                Image.SaveAs(path + fileName);
 
                 book.Image = fileName;
                 if (bookRepository.Update(book) == true)
                 {
+                    TempData["message"] = book.Title + " book is updated!!";
                     return RedirectToAction("Index");
                 }
             }
-            return RedirectToAction("Edit", book);           
+            return View(book);
         }
 
         public ActionResult Borrow(int Id)
@@ -154,16 +170,14 @@ namespace CaseStudy.Controllers
                 PhoneNumber = book.Borrower.PhoneNumber,
                 Email = book.Borrower.Email
             };
-            
-            if (borrowerRepository.Insert(borrower) == true)
+
+            book.Borrower = borrower;
+            if (bookRepository.UpdateBookBorrower(book) == true)
             {
-                book.Borrower = borrower;
-                if (bookRepository.UpdateBookBorrower(book) == true)
-                {
-                    string mess = "http://localhost:61698/Book/ConfirmBorrowBook/" + book.Id;
-                    bookRepository.SendMail().sendConfirm("Xác nhận", book.Borrower.Email, mess);
-                    return RedirectToAction("Index");
-                }
+                string mess = string.Format("{0}{1}{2}", this.url, "/Book/ConfirmBorrowBook/", book.Id);
+                bookRepository.SendMail().sendConfirm("Xác nhận", book.Borrower.Email, mess);
+                TempData["message"] = "Libanon sent link comfirm borrowing " + book.Title + " book in " + book.Borrower.Email;
+                return RedirectToAction("Index");
             }
             return View();
         }
@@ -171,9 +185,10 @@ namespace CaseStudy.Controllers
         public ActionResult ConfirmBorrowBook(int Id)
         {
             var book = bookRepository.GetItem(Id);
-            string mess = "Accept: http://localhost:61698/Book/Accept/" + book.Id + "\nReject: http://localhost:61698/Book/Reject/" + book.Id;
+            string mess = string.Format("Accept: {0}{1}{2}\nReject: {3}{4}{5}", this.url, "/Book/Accept/", book.Id, this.url, "/Book/Reject/", book.Id);
             bookRepository.SendMail().sendConfirm("Xác nhận", book.Owner.Email, mess);
-            return View();
+            TempData["message"] = "Libanon sent link accept or reject about borrowing " + book.Title + " book to owner email " + book.Owner.Email;
+            return RedirectToAction("Index");
         }
 
         public ActionResult Reject(int Id)
@@ -188,7 +203,8 @@ namespace CaseStudy.Controllers
                 bookRepository.SendMail().sendConfirm("Thông báo", borrower.Email, messToBorrower);
                 bookRepository.SendMail().sendConfirm("Thông báo", book.Owner.Email, messToOwner);
             }
-            return View();
+            TempData["message"] = book.Owner.OwnerName + " reject borrowing of " + borrower.BorrowerName;
+            return RedirectToAction("Index");
         }
 
         public ActionResult Accept(int Id)
@@ -197,12 +213,13 @@ namespace CaseStudy.Controllers
             var borrower = borrowerRepository.GetItem((int)book.BorrowerId);
             book.BorrowerId = borrower.BorrowerId;
             string messToOwner = "Bạn đã đồng ý yêu cầu mượn sách với các thông tin:\nTên sách: " + book.Title + "\nNgười mượn: " + borrower.BorrowerName
-                + "\nXác nhận đã trao: " + "http://localhost:61698/Book/ConfirmBorrowingBook/" + book.BorrowerId;
+                + "\nXác nhận đã trao: " + this.url + "/Book/ConfirmBorrowingBook/" + book.OwnerId;
             string messToBorrower = "Yêu cần mượn sách của bạn đã được chấp nhận, thông tin sách:\nTên sách: " + book.Title + "\nChủ sở hữu: " + book.Owner.OwnerName
-                + "\nXác nhận đã nhận: " + "http://localhost:61698/Book/ConfirmBorrowingBook/" + book.OwnerId;
+                + "\nXác nhận đã nhận: " + this.url + "/Book/ConfirmBorrowingBook/" + book.BorrowerId;
             bookRepository.SendMail().sendConfirm("Thông báo", borrower.Email, messToBorrower);
             bookRepository.SendMail().sendConfirm("Thông báo", book.Owner.Email, messToOwner);
-            return View();
+            TempData["message"] = book.Owner.OwnerName + " accept borrowing of " + borrower.BorrowerName;
+            return RedirectToAction("Index");
         }
 
         public ActionResult ConfirmBorrowingBook(int Id)
@@ -217,20 +234,26 @@ namespace CaseStudy.Controllers
             {
                 borrowerId = Id;
             }
-            var borrowingBook = bookRepository.GetAll().Where(x => x.BorrowerId == borrowerId && x.OwnerId == ownerId).FirstOrDefault();
+            var borrowingBook = bookRepository.GetAll().Where(x => x.BorrowerId == borrowerId && x.OwnerId == ownerId && x.IsBorrowed == false).FirstOrDefault();
             if(borrowingBook != null)
             {
                 borrowingBook.IsBorrowed = true;
-                if (bookRepository.Update(borrowingBook) == true)
+                if (bookRepository.UpdateBookBorrower(borrowingBook) == true)
                 {
-                    return View();
+                    ownerId = null;
+                    borrowerId = null;
+                    TempData["message"] = "Borrowing " + borrowingBook.Title + " is done!!";
                 }
-            }
+            }          
             return RedirectToAction("Index");
         }
 
         public ActionResult Return(int Id)
         {
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"].ToString();
+            }
             var book = bookRepository.GetItem(Id);
             return View();
         }
@@ -240,17 +263,19 @@ namespace CaseStudy.Controllers
         {
             var booK = bookRepository.GetItem(book.Id);
             var borrower = borrowerRepository.GetItem((int)booK.BorrowerId);
-            if (booK.Borrower.Email == borrower.Email)
+            if (book.Borrower.Email != borrower.Email)
             {
-                string messToOwner = "Sách của bạn sẽ được trả lại bởi " + borrower.BorrowerName + ", vui lòng liên hệ: " + borrower.PhoneNumber + " để nhận sách"
-                    + "\nXác nhận đã nhận lại: " + "http://localhost:61698/Book/ConfirmReturningBook/" + booK.OwnerId;
-                string messToBorrower  = "Yêu cần của bạn đã được gửi về hệ thống, thông tin chủ sở hữu:\nChủ sở hữu: " + booK.Owner.OwnerName + "\nLiên hệ: " + booK.Owner.PhoneNumber
-                    + "\nXác nhận đã trả sách: " + "http://localhost:61698/Book/ConfirmReturningBook/" +booK.BorrowerId;
-                bookRepository.SendMail().sendConfirm("Thông báo", borrower.Email, messToBorrower);
-                bookRepository.SendMail().sendConfirm("Thông báo", booK.Owner.Email, messToOwner);
-                return RedirectToAction("Index");
+                TempData["message"] = "Email: " + book.Borrower.Email + " don't borrow " + booK.Title + " book!!";
+                return Return(booK.Id);
             }
-            return View();
+            string messToOwner = "Sách của bạn sẽ được trả lại bởi " + borrower.BorrowerName + ", vui lòng liên hệ: " + borrower.PhoneNumber + " để nhận sách"
+                    + "\nXác nhận đã nhận lại: " + this.url + "/Book/ConfirmReturningBook/" + booK.OwnerId;
+            string messToBorrower = "Yêu cần của bạn đã được gửi về hệ thống, thông tin chủ sở hữu:\nChủ sở hữu: " + booK.Owner.OwnerName + "\nLiên hệ: " + booK.Owner.PhoneNumber
+                + "\nXác nhận đã trả sách: " + this.url + "/Book/ConfirmReturningBook/" + booK.BorrowerId;
+            bookRepository.SendMail().sendConfirm("Thông báo", borrower.Email, messToBorrower);
+            bookRepository.SendMail().sendConfirm("Thông báo", booK.Owner.Email, messToOwner);
+            TempData["message"] = borrower.BorrowerName + " will return " + booK.Title + " book to " + booK.Owner.OwnerName;
+            return RedirectToAction("Index");
         }
 
         public ActionResult ConfirmReturningBook(int Id)
@@ -265,21 +290,32 @@ namespace CaseStudy.Controllers
             {
                 borrowerId = Id;
             }
-            var borrowingBook = bookRepository.GetAll().Where(x => x.BorrowerId == borrowerId && x.OwnerId == ownerId).FirstOrDefault();
+            var borrowingBook = bookRepository.GetAll().Where(x => x.BorrowerId == borrowerId && x.OwnerId == ownerId && x.IsBorrowed == true).FirstOrDefault();
             if (borrowingBook != null)
             {
                 borrowingBook.IsBorrowed = false;
-                borrowingBook.BorrowerId = null;
-                if (bookRepository.Update(borrowingBook) == true)
+                if (bookRepository.UpdateBookBorrower(borrowingBook) == true)
                 {
-                    return View();
+                    ownerId = null;
+                    borrowerId = null;
+                    TempData["message"] = "Returning " + borrowingBook.Title + "is done!!";
                 }
-            }
+            }          
             return RedirectToAction("Index");
         }
 
         public ActionResult Rate(int Id)
         {
+            IList<SelectListItem> rateList = new List<SelectListItem>
+            {
+                new SelectListItem{Text = "1", Value = "1"},
+                new SelectListItem{Text = "2", Value = "2"},
+                new SelectListItem{Text = "3", Value = "3"},
+                new SelectListItem{Text = "4", Value = "4"},
+                new SelectListItem{Text = "5", Value = "5"}
+
+            };
+            ViewBag.RateList = rateList;
             var book = bookRepository.GetItem(Id);
             return View(book);
         }
@@ -292,11 +328,15 @@ namespace CaseStudy.Controllers
             if(booK.ISBN.RateScore != null)
             {
                 double oldRateScore = (double)booK.ISBN.RateScore;
-                booK.ISBN.RateScore = (newRateScore + oldRateScore) / 2;
+                int numberOfRating = booK.ISBN.NumberOfRating;
+                double totalRateScore = (newRateScore + oldRateScore * numberOfRating) / (numberOfRating + 1);
+                booK.ISBN.RateScore = Math.Round(totalRateScore, 1);
+                booK.ISBN.NumberOfRating = numberOfRating + 1;
             }
             else
             {
                 booK.ISBN.RateScore = newRateScore;
+                booK.ISBN.NumberOfRating = 1;
             }
             if (bookRepository.Update(booK) == true)
             {

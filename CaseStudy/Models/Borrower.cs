@@ -15,7 +15,6 @@ namespace CaseStudy.Models
         [DataType(DataType.PhoneNumber, ErrorMessage = "Invalid Phone Number")]
         [RegularExpression(@"^0([0-9]{9})$", ErrorMessage = "Invalid Phone Number.")]
         public string PhoneNumber { get; set; }
-        [Required]
         [DataType(DataType.EmailAddress)]
         [EmailAddress]
         public string Email { get; set; }

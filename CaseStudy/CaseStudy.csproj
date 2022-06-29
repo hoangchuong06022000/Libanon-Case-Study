@@ -222,6 +222,14 @@
     <Compile Include="Migrations\202206090540249_LibanonDB-v5.Designer.cs">
       <DependentUpon>202206090540249_LibanonDB-v5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206280412184_LibanonDB-v6.cs" />
+    <Compile Include="Migrations\202206280412184_LibanonDB-v6.Designer.cs">
+      <DependentUpon>202206280412184_LibanonDB-v6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206280907043_LibanonDB-v7.cs" />
+    <Compile Include="Migrations\202206280907043_LibanonDB-v7.Designer.cs">
+      <DependentUpon>202206280907043_LibanonDB-v7.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Borrower.cs" />
@@ -299,15 +307,10 @@
     <Content Include="Views\Book\Create.cshtml" />
     <Content Include="Views\Book\Edit.cshtml" />
     <Content Include="Views\Book\Details.cshtml" />
-    <Content Include="Views\Book\ConfirmAddBook.cshtml" />
     <Content Include="Views\Book\ConfirmOTP.cshtml" />
     <Content Include="Views\Book\Borrow.cshtml" />
-    <Content Include="Views\Book\ConfirmBorrowBook.cshtml" />
-    <Content Include="Views\Book\Reject.cshtml" />
     <Content Include="Views\Book\Accept.cshtml" />
-    <Content Include="Views\Book\ConfirmBorrowingBook.cshtml" />
     <Content Include="Views\Book\Return.cshtml" />
-    <Content Include="Views\Book\ConfirmReturningBook.cshtml" />
     <Content Include="Views\Book\Rate.cshtml" />
     <None Include="Web.IISProfile.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -361,6 +364,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206090540249_LibanonDB-v5.resx">
       <DependentUpon>202206090540249_LibanonDB-v5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206280412184_LibanonDB-v6.resx">
+      <DependentUpon>202206280412184_LibanonDB-v6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206280907043_LibanonDB-v7.resx">
+      <DependentUpon>202206280907043_LibanonDB-v7.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -15,6 +15,7 @@ namespace CaseStudy.Models
         public string ISBNString { get; set; }
         [Range((double)1, (double)5, ErrorMessage = "Invalid!! Must be 1 to 5!!")]
         public double? RateScore { get; set; }
+        public int NumberOfRating { get; set; }
         public virtual Book Book { get; set; }
     }
 }

@@ -21,6 +21,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Book Management</h4>
+                        <p id="error" class="text-danger">@ViewBag.Message</p>
                     </div>
                     <div class="col-sm-4">
                         <a href="@Url.Action("Create", "Book")" class="add"><button type="button" class="btn btn-info-add-new" style="background-color: #51bcda;"><i class="fa fa-plus"></i> Create New</button></a>

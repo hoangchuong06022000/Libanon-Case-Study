@@ -91,10 +91,14 @@ namespace CaseStudy.Repository
                 book.Author = item.Author;
                 book.Image = item.Image;
                 book.PublishYear = item.PublishYear;
-                book.ISBN.ISBNString = item.ISBN.ISBNString;
+                book.ISBN = new ISBN() 
+                { 
+                    ISBNString = item.ISBN.ISBNString,
+                    RateScore = item.ISBN.RateScore,
+                    NumberOfRating = item.ISBN.NumberOfRating
+                };
                 book.Summary = item.Summary;
                 book.Category = item.Category;
-                book.IsBorrowed = item.IsBorrowed;
                 db.Entry(book).State = EntityState.Modified;
                 db.SaveChanges();
                 return true;
@@ -105,12 +109,34 @@ namespace CaseStudy.Repository
             }
         }
         public bool UpdateBookBorrower(Book item)
-        {
+        {           
             try
             {
                 Book book = db.Books.Find(item.Id);
+                Borrower borrower = null;
+                if (item.Borrower.Email != null)
+                {
+                    borrower = db.Borrowers.Where(x => x.Email == item.Borrower.Email).FirstOrDefault();
+                }
+                
                 db.Books.Attach(book);
-                book.Borrower = item.Borrower;
+                if (item.IsBorrowed != null)
+                {
+                    book.IsBorrowed = item.IsBorrowed;
+                }
+                if (item.IsBorrowed == false)
+                {
+                    item.BorrowerId = null;
+                    book.IsBorrowed = item.IsBorrowed;
+                }
+                if (borrower != null)
+                {
+                    book.Borrower = borrower;
+                }
+                else
+                {
+                    book.Borrower = item.Borrower;
+                }
                 db.Entry(book).State = EntityState.Modified;
                 db.SaveChanges();
                 return true;
